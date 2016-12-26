@@ -21,13 +21,13 @@ def thru(dirf, fname, val, key):
 	if changed:
 		move(tmpf, fname)
 
-def crawl(dirc):
+def crawl(dirc, key, val):
 	for fname in os.listdir(dirc):
 		if fname.endswith(".js"):
 			thru(dirc, fname, val, key)
 		else:
 			dirk = dirc+'/'+fname
-			crawl(dirk)
+			crawl(dirk, key, val)
 def main(pat, file, dirc):
 	for line in file:
 		m = pat.match(line)
@@ -37,7 +37,7 @@ def main(pat, file, dirc):
 			val = re.sub(r'[\'\"]\,*', '', val)
 			key = re.sub(r'(\:.*)', '', line)
 			key = re.sub(r'\s+', '', key)
-			crawl(dirc)
+			crawl(dirc, key, val)
 
 if __name__ == '__main__':
 	dirc = '/home/muna/opensooq/pwa/httpdocs/os_web/web/themes/pwa/js/components'
