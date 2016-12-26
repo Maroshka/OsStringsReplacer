@@ -3,9 +3,7 @@
 from shutil import move
 import re
 import os
-dirc = '/home/muna/opensooq/pwa/httpdocs/os_web/web/themes/pwa/js/components'
-file = open('/home/muna/opensooq/pwa/httpdocs/os_web/web/themes/pwa/js/translations/NewTranslation.i18n.js', 'r')
-pat = re.compile(r'\s+[A-Za-z0-9\_]+\:\s*(.*)+')
+
 def thru(dirf, fname, val, key):
 	tmpd = dirf.replace('pwa', 'v2', 1)
 	if not os.path.exists(tmpd):
@@ -30,13 +28,19 @@ def crawl(dirc):
 		else:
 			dirk = dirc+'/'+fname
 			crawl(dirk)
+def main(pat, file, dirc):
+	for line in file:
+		m = pat.match(line)
+		if (m != None):
+			line = m.group()
+			val = re.sub(r'\s+[A-Za-z0-9\_]+\:\s*[\'\"]', '', line)
+			val = re.sub(r'[\'\"]\,*', '', val)
+			key = re.sub(r'(\:.*)', '', line)
+			key = re.sub(r'\s+', '', key)
+			crawl(dirc)
 
-for line in file:
-	m = pat.match(line)
-	if (m != None):
-		line = m.group()
-		val = re.sub(r'\s+[A-Za-z0-9\_]+\:\s*[\'\"]', '', line)
-		val = re.sub(r'[\'\"]\,*', '', val)
-		key = re.sub(r'(\:.*)', '', line)
-		key = re.sub(r'\s+', '', key)
-		crawl(dirc)
+if __name__ == '__main__':
+	dirc = '/home/muna/opensooq/pwa/httpdocs/os_web/web/themes/pwa/js/components'
+	file = open('/home/muna/opensooq/pwa/httpdocs/os_web/web/themes/pwa/js/translations/NewTranslation.i18n.js', 'r')
+	pat = re.compile(r'\s+[A-Za-z0-9\_]+\:\s*(.*)+')
+	main(pat, file, dirc)
